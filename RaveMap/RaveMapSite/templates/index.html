@@ -1,0 +1,28 @@
+{% include 'partials/header.html' %}
+		<div class="search_drop">
+
+			<!-- use backend to show filter form;
+				 enable/disable location, show slider value, query api -->
+
+			<form class="search_form"> <!-- action="backend.py" -->
+				<button type="button" class="drop">Search Criteria</button>
+			</form>
+			<form class="filter_form"> <!-- action="backend.py" -->
+				<input type="radio" name="location" value="current" checked> Current Location<br>
+				<input type="radio" name="location" value="other"> <input type="text" placeholder="Enter Zip Code" pattern="[0-9]{5}"><br>
+				Distance: 0 mi.<input type="range" name="distance" min="0" max="100" step="5">100 mi.<br>
+				<button type="submit" class="submit_search">Search</button>
+			</form>
+		</div>
+		<section id="Results">
+			<div class="container">
+				<div class="box">
+					<h1>List of events</h1>
+				</div>
+				<div class="box">
+					<h1>Google map showing events</h1>
+				</div>
+			</div>
+		</section>
+	</body>
+{% include 'partials/footer.html' %}

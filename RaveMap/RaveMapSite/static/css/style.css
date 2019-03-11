@@ -1,0 +1,87 @@
+body{
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 14px;
+	line-height:1.5;
+	padding: 0;
+	margin:0;
+	background-color: #606060;
+}
+
+.container{
+	width:90%;
+	margin:auto;
+	overflow:hidden;
+}
+
+header{
+	font-family: Tahoma, Geneva, sans-serif;
+	background-color: #404040;
+	min-height: 50px;
+	border-bottom: #00FFFF 3px solid;
+}
+
+header #A, header #E{
+	color: #1aff1a
+}
+header #R, header #V, header #M, header #P{
+	color: #b366ff;
+}
+header #OB, header #CB{
+	color: #00FFFF;
+}
+
+.search_drop{
+	margin-top: 5px;
+	margin-left: 5px;
+	overflow: hidden;
+}
+
+.search_drop .drop{
+}
+
+.search_drop .filter_form{
+	display:none;
+	border: #ffffff 1px solid;
+	color:white;
+	position: absolute;
+	z-index: 1;
+	background-color: #606060;
+	box-shadow: 0px 8px 20px 0px rgba(0,0,0,0.2);
+	padding: 5px;
+	margin-top: 5px;
+}
+
+#Results{
+	overflow: hidden;
+}
+
+#Results .container .box{
+	width:45%;
+	float:left;
+	padding:10px;
+	min-height: 60px;
+}
+
+footer{
+	font-family: Tahoma, Geneva, sans-serif;
+	color: white;
+	background-color: #404040;
+	text-align:center;
+	border-top: #00FFFF 3px solid;
+	position: fixed;
+	bottom:0px;
+	width:100%;
+}
+
+@media(max-width: 768px){
+	header{
+		text-align: center;
+		width:100%;
+	}
+
+#Results .container .box{
+		width:100%;
+		float:none;
+		margin-top:10px;
+	}
+}
