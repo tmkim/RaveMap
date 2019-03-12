@@ -18,6 +18,9 @@
 			<div class="container">
 				<div class="box">
 					<h1>List of events</h1>
+					{% for info in raves %}
+					<li>{{info.name}} @ {{info.venue}} - {{info.date}}</li>
+					{% endfor %}
 				</div>
 				<div class="box">
 					<h1>Google map showing events</h1>
