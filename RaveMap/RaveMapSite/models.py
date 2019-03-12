@@ -9,4 +9,3 @@ class RaveEvent(models.Model):
     artists = models.TextField()
     location = models.TextField()
     Date = models.DateTimeField()
-    
