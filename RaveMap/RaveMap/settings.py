@@ -24,6 +24,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '%1^1e$94-ap)1b3v@orj%@%4j@$z%0@3$lxld1qn^@ap7)wv$)'
 EDMTRAIN_API_KEY = config.EDMTRAIN_API_KEY
 GOOGLE_MAPS_API_KEY = config.GOOGLE_MAPS_API_KEY
+GOOGLE_MAPS_URL = config.GOOGLE_MAPS_URL
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True

@@ -3,36 +3,63 @@ from __future__ import unicode_literals
 from django.shortcuts import render
 from django.conf import settings
 from operator import itemgetter
-from datetime import datetime
+from datetime import datetime, date
 import requests
 import json
+import geocoder
 
 def index(request):
-    #resp = requests.get(build_api_call()
-    r = requests.get('https://edmtrain.com/api/events?locationIds=42&client=dcd97c59-e01a-4a9a-8220-fc108e7003ff').json()
-
+    r = requests.get(build_edmt_api_call()).json()
     raves = build_response_content(r)
 
-    context = {'raves' : raves}
+    context = {
+                'raves' : raves,
+                'gmap_url' : settings.GOOGLE_MAPS_URL
+              }
     #print(resp.text)
 
     return render(request, 'index.html', context)
 
-def build_api_call(location=-1, radius=25):
+def build_edmt_api_call(city="",state="", radius=25):
     base_url = 'https://edmtrain.com/api/events?'
     api_key = settings.EDMTRAIN_API_KEY
     start_date = str(date.today())
-    #location_ids = build_locations(location, radius)
-    location_ids='94'
+    location_ids = build_locations(city, state, radius)
     api_url = '{}locationIds={}&startDate={}&client={}'
 
     return api_url.format(base_url, location_ids, start_date, api_key)
 
-# def build_locations(location, radius):
-#     if location == -1:
-        #location = user's location
+def build_locations(city, state, radius):
+    base_url = 'https://edmtrain.com/api/locations?state={}&city={}&client={}'
+    cities_url="http://getnearbycities.geobytes.com/GetNearbyCities?radius={}&locationcode={}&limit={}"
+    loc_ids = ""
 
-    #return string of location IDs within radius to location
+    if city == "" and state == "":
+        geo = geocoder.ip('me')
+        # state = geo.state.replace(" ", "%20")
+        # city = geo.city.replace(" ", "%20")
+    else:
+        geo = geocoder.ip(city)
+
+    rc = requests.get(cities_url.format(radius, geo.ip, radius*4)).json()
+
+    for item in rc:
+        r = requests.get(base_url.format(item[12], item[1], settings.EDMTRAIN_API_KEY)).json()
+        if r['success'] == True:
+            loc_ids += str(r['data'][0]['id']) + ","
+        else:
+            loc_ids = loc_ids #todo: error handling
+
+    return loc_ids[:-1]
+
+def find_cities(radius, city=""):
+    if city == "":
+        loc_code = geocoder.ip('me')
+    else:
+        loc_code = geocoder.ip(city)
+
+
+
 
 def build_response_content(response):
     content = []
