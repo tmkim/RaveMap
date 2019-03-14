@@ -4,8 +4,24 @@ from datetime import datetime
 from django.db import models
 
 # Create your models here.
-class RaveEvent(models.Model):
+class Rave_Event(models.Model):
     title = models.CharField(max_length=200)
     artists = models.TextField()
     location = models.TextField()
-    Date = models.DateTimeField()
+    date = models.DateTimeField()
+    ticket_link = models.TextField()
+
+class Venue(models.Model):
+    id = models.IntegerField(primary_key=True)
+    name = models.TextField()
+    location = models.TextField()
+    address = models.TextField()
+    state = models.TextField()
+    longitude = models.FloatField()
+    latitude = models.FloatField()
+
+class Location(models.Model):
+    state = models.TextField()
+    city = models.TextField()
+    longitude = models.FloatField()
+    latitude = models.FloatField()

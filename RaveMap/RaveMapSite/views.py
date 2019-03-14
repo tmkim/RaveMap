@@ -4,13 +4,28 @@ from django.shortcuts import render
 from django.conf import settings
 from operator import itemgetter
 from datetime import datetime, date
+from .models import Venue, Location
+from math import radians, cos, sin, asin, sqrt
 import requests
 import json
 import geocoder
 
 def index(request):
-    r = requests.get(build_edmt_api_call()).json()
+    g = geocoder.ip('me')
+    r = requests.get(build_edmt_api_call(g.latlng[0], g.latlng[1])).json()
     raves = build_response_content(r)
+
+    # venues = Venue.objects.all()
+    # if not venues.exists():
+    #     insert_venues_into_db()
+
+    # locs = Location.objects.all()
+    # if not locs.exists():
+    #     insert_locs_into_db()
+
+    #remove the above code
+    #get list of nearby venues
+    #populate venues on map
 
     context = {
                 'raves' : raves,
@@ -20,46 +35,42 @@ def index(request):
 
     return render(request, 'index.html', context)
 
-def build_edmt_api_call(city="",state="", radius=25):
+def build_edmt_api_call(lat,long, radius=15):
+    base_url = 'https://edmtrain.com/api/events?'
+    api_key = settings.EDMTRAIN_API_KEY
+    start_date = str(date.today()) 
+    venue_ids = get_nearby_venues(lat, long, radius)
+    api_url = '{}venueIds={}&startDate={}&client={}'
+
+    return api_url.format(base_url, venue_ids, start_date, api_key)
+
+def get_distance(start_lat, start_long, venue_lat, venue_long):
+    slat = radians(start_lat)
+    vlat = radians(venue_lat)
+    dlat = vlat - slat
+    dlng = radians(venue_long - start_long)
+    a = sin(dlat/2.0)**2+cos(slat)*cos(vlat)*sin(dlng/2.0)**2
+    c = 2 * asin(sqrt(a))
+
+    return c * 3956 #miles
+
+def get_nearby_venues(lat, long, radius):
+    venues = Venue.objects.all()
+    near_venues = ""
+    for v in venues:
+        d = get_distance(lat, long, v.latitude, v.longitude)
+        if d < radius:
+            near_venues += str(v.id) + ","
+
+    return near_venues[:-1]
+
+def get_raves_by_venue(venue_id):
     base_url = 'https://edmtrain.com/api/events?'
     api_key = settings.EDMTRAIN_API_KEY
     start_date = str(date.today())
-    location_ids = build_locations(city, state, radius)
-    api_url = '{}locationIds={}&startDate={}&client={}'
+    api_url = '{}venueIds={}&startDate={}&client={}'
 
-    return api_url.format(base_url, location_ids, start_date, api_key)
-
-def build_locations(city, state, radius):
-    base_url = 'https://edmtrain.com/api/locations?state={}&city={}&client={}'
-    cities_url="http://getnearbycities.geobytes.com/GetNearbyCities?radius={}&locationcode={}&limit={}"
-    loc_ids = ""
-
-    if city == "" and state == "":
-        geo = geocoder.ip('me')
-        # state = geo.state.replace(" ", "%20")
-        # city = geo.city.replace(" ", "%20")
-    else:
-        geo = geocoder.ip(city)
-
-    rc = requests.get(cities_url.format(radius, geo.ip, radius*4)).json()
-
-    for item in rc:
-        r = requests.get(base_url.format(item[12], item[1], settings.EDMTRAIN_API_KEY)).json()
-        if r['success'] == True:
-            loc_ids += str(r['data'][0]['id']) + ","
-        else:
-            loc_ids = loc_ids #todo: error handling
-
-    return loc_ids[:-1]
-
-def find_cities(radius, city=""):
-    if city == "":
-        loc_code = geocoder.ip('me')
-    else:
-        loc_code = geocoder.ip(city)
-
-
-
+    return api_url.format(base_url, venue_id, start_date, api_key)
 
 def build_response_content(response):
     content = []
@@ -80,3 +91,24 @@ def build_response_content(response):
             })
 
     return content
+
+    # def insert_venues_into_db():
+    #     url = 'https://edmtrain.com/api/events?client={}'
+    #     r = requests.get(url.format(settings.EDMTRAIN_API_KEY)).json()
+    #     if r['success'] == True:
+    #         for e in r['data']:
+    #             try:
+    #                 Venue.objects.get(id=e['venue']['id'])
+    #             except Venue.DoesNotExist:
+    #                 i = Venue(
+    #                     id=e['venue']['id'],
+    #                     name = e['venue']['name'],
+    #                     location = e['venue']['location'],
+    #                     address = e['venue']['address'],
+    #                     state = e['venue']['state'],
+    #                     longitude = e['venue']['longitude'],
+    #                     latitude = e['venue']['latitude']
+    #                 )
+    #                 i.save()
+
+    # def insert_locs_into_db():

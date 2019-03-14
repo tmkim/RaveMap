@@ -17,15 +17,15 @@
 		<section id="Results">
 			<div class="container">
 				<div class="box">
+					<h1>google map</h1><br>
+					<iframe width="500" height="450" frameborder="0" style="border:0"
+						src={{gmap_url}}></iframe>
+				</div>
+				<div class="box">
 					<h1>List of events</h1>
 					{% for info in raves %}
 					<li>{{info.name}} @ {{info.venue}} - {{info.date}}</li>
 					{% endfor %}
-				</div>
-				<div class="box">
-					<h1>google map</h1><br>
-					<iframe width="600" height="450" frameborder="0" style="border:0"
-						src={{gmap_url}}></iframe>
 				</div>
 			</div>
 		</section>
