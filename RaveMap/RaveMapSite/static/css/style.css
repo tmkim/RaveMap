@@ -50,19 +50,29 @@ header #OB, header #CB{
 }
 
 .rave_list{
+	float: left;
+	margin-left: 10px;
+}
+
+.search{
+	width: 46%;
+	padding: 5px;
+	margin-left: 10px;
+	margin-bottom: 10px;
+}
+
+.change_city{
+	float: left;
+}
+
+.search_map{
 	float: right;
 }
 
-.search_drop{
-	margin-top: 5px;
-	margin-left: 5px;
-	overflow: hidden;
+.change_city .drop{
 }
 
-.search_drop .drop{
-}
-
-.search_drop .filter_form{
+.change_city .filter_form{
 	display:none;
 	border: #ffffff 1px solid;
 	color:white;

@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 from django.shortcuts import render
 from django.conf import settings
+from django.http import JsonResponse
 from operator import itemgetter
 from datetime import datetime, date
 from .models import Venue, Location
@@ -16,8 +17,13 @@ def index(request):
     raves = build_response_content(r)
 
     venues = get_nearby_venues(g.latlng[0], g.latlng[1], 15)
-    for v in venues:
-        v.address = v.address[:-11]
+    markers = []
+
+    # with requests.Session() as session:
+    #     for v in venues:
+    #         v.address = v.address[:-11]
+    #         m = geocoder.google("51 Stuart St, Boston MA", session=session)
+    #         markers.append(m)
 
     # venues = Venue.objects.all()
     # if not venues.exists():
@@ -32,6 +38,7 @@ def index(request):
     #populate venues on map
 
     context = {
+                # 'markers': markers,
                 'venues': venues,
                 'raves' : raves,
                 'clat' : g.latlng[0],
@@ -41,6 +48,21 @@ def index(request):
     #print(resp.text)
 
     return render(request, 'index.html', context)
+
+def show_raves(request):
+    r = requests.get(get_raves_by_venue(request.GET.get('venue_id', None))).json()
+    raves = build_response_content(r)
+    data = {
+        'raves': raves
+    }
+    return JsonResponse(data)
+
+def get_raves_by_venue(venue_Id):
+    base_url = 'https://edmtrain.com/api/events?'
+    api_key = settings.EDMTRAIN_API_KEY
+    api_url = '{}venueIds={}&client={}'
+
+    return api_url.format(base_url, venue_Id, api_key)
 
 def build_edmt_api_call(lat,long, radius=15):
     base_url = 'https://edmtrain.com/api/events?'
@@ -73,14 +95,6 @@ def get_nearby_venues(lat, long, radius):
             near_venues.append(v)
 
     return near_venues
-
-def get_raves_by_venue(venue_id):
-    base_url = 'https://edmtrain.com/api/events?'
-    api_key = settings.EDMTRAIN_API_KEY
-    start_date = str(date.today())
-    api_url = '{}venueIds={}&startDate={}&client={}'
-
-    return api_url.format(base_url, venue_id, start_date, api_key)
 
 def build_response_content(response):
     content = []
