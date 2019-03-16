@@ -15,6 +15,10 @@ def index(request):
     r = requests.get(build_edmt_api_call(g.latlng[0], g.latlng[1])).json()
     raves = build_response_content(r)
 
+    venues = get_nearby_venues(g.latlng[0], g.latlng[1], 15)
+    for v in venues:
+        v.address = v.address[:-11]
+
     # venues = Venue.objects.all()
     # if not venues.exists():
     #     insert_venues_into_db()
@@ -28,7 +32,10 @@ def index(request):
     #populate venues on map
 
     context = {
+                'venues': venues,
                 'raves' : raves,
+                'clat' : g.latlng[0],
+                'clng' : g.latlng[1],
                 'gmap_url' : settings.GOOGLE_MAPS_URL
               }
     #print(resp.text)
@@ -38,11 +45,14 @@ def index(request):
 def build_edmt_api_call(lat,long, radius=15):
     base_url = 'https://edmtrain.com/api/events?'
     api_key = settings.EDMTRAIN_API_KEY
-    start_date = str(date.today()) 
-    venue_ids = get_nearby_venues(lat, long, radius)
+    start_date = str(date.today())
+    venues = get_nearby_venues(lat, long, radius)
+    venue_ids = ""
+    for v in venues:
+        venue_ids += str(v.id) + ","
     api_url = '{}venueIds={}&startDate={}&client={}'
 
-    return api_url.format(base_url, venue_ids, start_date, api_key)
+    return api_url.format(base_url, venue_ids[:-1], start_date, api_key)
 
 def get_distance(start_lat, start_long, venue_lat, venue_long):
     slat = radians(start_lat)
@@ -56,13 +66,13 @@ def get_distance(start_lat, start_long, venue_lat, venue_long):
 
 def get_nearby_venues(lat, long, radius):
     venues = Venue.objects.all()
-    near_venues = ""
+    near_venues = []
     for v in venues:
         d = get_distance(lat, long, v.latitude, v.longitude)
         if d < radius:
-            near_venues += str(v.id) + ","
+            near_venues.append(v)
 
-    return near_venues[:-1]
+    return near_venues
 
 def get_raves_by_venue(venue_id):
     base_url = 'https://edmtrain.com/api/events?'

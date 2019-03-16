@@ -7,12 +7,6 @@ body{
 	background-color: #606060;
 }
 
-.container{
-	width:90%;
-	margin:auto;
-	overflow:hidden;
-}
-
 header{
 	font-family: Tahoma, Geneva, sans-serif;
 	background-color: #404040;
@@ -28,6 +22,35 @@ header #R, header #V, header #M, header #P{
 }
 header #OB, header #CB{
 	color: #00FFFF;
+}
+
+.results{
+	overflow: hidden;
+}
+
+.container{
+	width:98%;
+	margin:auto;
+	overflow:hidden;
+}
+
+.box{
+	width:47%;
+	float:left;
+	margin: auto;
+	padding: 5px;
+	min-height: 420px;
+}
+
+#map{
+	width: 98%;
+	height: 420px;
+	frameborder:0;
+	border:0;
+}
+
+.rave_list{
+	float: right;
 }
 
 .search_drop{
@@ -51,17 +74,6 @@ header #OB, header #CB{
 	margin-top: 5px;
 }
 
-#Results{
-	overflow: hidden;
-}
-
-#Results .container .box{
-	width:45%;
-	float:left;
-	padding:10px;
-	min-height: 60px;
-}
-
 footer{
 	font-family: Tahoma, Geneva, sans-serif;
 	color: white;
@@ -79,7 +91,7 @@ footer{
 		width:100%;
 	}
 
-#Results .container .box{
+.box{
 		width:100%;
 		float:none;
 		margin-top:10px;
