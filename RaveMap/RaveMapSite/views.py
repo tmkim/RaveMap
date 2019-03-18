@@ -13,11 +13,8 @@ import geocoder
 
 def index(request):
     g = geocoder.ip('me')
-    r = requests.get(build_edmt_api_call(g.latlng[0], g.latlng[1])).json()
-    raves = build_response_content(r)
 
     venues = get_nearby_venues(g.latlng[0], g.latlng[1], 15)
-    markers = []
 
     # with requests.Session() as session:
     #     for v in venues:
@@ -33,14 +30,8 @@ def index(request):
     # if not locs.exists():
     #     insert_locs_into_db()
 
-    #remove the above code
-    #get list of nearby venues
-    #populate venues on map
-
     context = {
-                # 'markers': markers,
                 'venues': venues,
-                'raves' : raves,
                 'clat' : g.latlng[0],
                 'clng' : g.latlng[1],
                 'gmap_url' : settings.GOOGLE_MAPS_URL

@@ -1,39 +1,37 @@
 {% include 'partials/header.html' %}
-	<div class="search">
-		<div class="change_city">
+	<div class="container">
+		<div class="box">
+			<div class="search">
+				<div class="change_city">
 
-			<!-- use backend to show filter form;
-				 enable/disable location, show slider value, query api -->
+					<!-- use backend to show filter form;
+						 enable/disable location, show slider value, query api -->
 
-			<form class="search_form"> <!-- action="backend.py" -->
-				<button type="button" class="drop">Change City</button>
-			</form>
-			<form class="filter_form"> <!-- action="backend.py" -->
-				<input type="radio" name="location" value="current" checked> Current Location<br>
-				<input type="radio" name="location" value="other"> <input type="text" placeholder="Enter Zip Code" pattern="[0-9]{5}"><br>
-				Distance: 0 mi.<input type="range" name="distance" min="0" max="100" step="5">100 mi.<br>
-				<button type="submit" class="submit_search">Search</button>
-			</form>
-		</div>
-		<div class="search_map">
-			<button onclick="searchBounds()">Search This Area</button>
-		</div>
-	</div>
-	<br>
-	<section class="results">
-		<div class="container">
-			<div class="box">
-				<div id="map"></div>
-			</div>
-			<div class="box">
-				<div class = "rave_list">
-					{% for info in raves %}
-						<li>{{info.name}} @ {{info.venue}} - {{info.date}}</li>
-					{% endfor %}
+					<form class="search_form"> <!-- action="backend.py" -->
+						<button type="button" class="drop">Change City</button>
+					</form>
+					<form class="filter_form"> <!-- action="backend.py" -->
+						<input type="radio" name="location" value="current" checked> Current Location<br>
+						<input type="radio" name="location" value="other"> <input type="text" placeholder="Enter Zip Code" pattern="[0-9]{5}"><br>
+						Distance: 0 mi.<input type="range" name="distance" min="0" max="100" step="5">100 mi.<br>
+						<button type="submit" class="submit_search">Search</button>
+					</form>
+				</div>
+				<div class="search_map">
+					<button onclick="searchBounds()">Search This Area</button>
 				</div>
 			</div>
+			<br>
+			<div id="map"></div>
 		</div>
-	</section>
+		<div class="box">
+			<div class = "rave_list">
+				<!-- {% for info in raves %}
+					<li>{{info.name}} @ {{info.venue}} - {{info.date}}</li>
+				{% endfor %} -->
+			</div>
+		</div>
+	<div>
 </body>
 {% include 'partials/footer.html' %}
 <script>
@@ -44,59 +42,49 @@
 		 zoom: 12,
 		 center: {lat: {{clat}}, lng: {{clng}}}
 	 });
-
-	 var marker = new google.maps.Marker({
-		 map: map,
-		 position: {lat: {{clat}}, lng: {{clng}}}
-	 });
-
-	 var info_window = new google.maps.InfoWindow({
-		 content: "Venue Name<br>Venue Address"
-	 });
-
-	 marker.addListener('click', function(){
-		 info_window.open(map, marker);
-
-		 $.ajax({
-			 url: '/ajax/show_raves/',
-			 data: {
-				 'venue_id': 344 //{{v.id}}
-			 },
-			 dataType: 'json',
-			 success: function(data){
-				 var rave_list_html = "";
-				 var raves = data.raves;
-
-				 $.each(raves, function(r){
-					 rave_list_html += "<li>" + raves[r].name + " - " + raves[r].date
-					 + "<br>Featuring: " + raves[r].dj
-					 + "<br><a target=\"_blank\" href=" + raves[r].tickets + ">Buy Tickets</a>"+ "</li>";
-				 })
-
-				 // for (r in raves){
-					//  rave_list_html += "<li>" + r['name'] + "</li>";
-				 // }
-				 $('.rave_list').html(rave_list_html);
-			 }
-		 });
-	 });
-	 // geocoder = new google.maps.Geocoder();
-	 // codeAddress(geocoder, map);
+	 geocoder = new google.maps.Geocoder();
+	 setMarkers(geocoder, map);
  }
 
- function codeAddress(geocoder, map) {
-	 // {% for v in venues %}
-	 // geocoder.geocode({'address': "{{v.address}}"}, function(results, status) {
-		//  if (status === 'OK') {
-		// 	 var marker = new google.maps.Marker({
-		// 		 map: map,
-		// 		 position: results[0].geometry.location
-		// 	 });
-		//  } else {
-		// 	 alert('Geocode was not successful for the following reason: ' + status);
-		//  }
-	 // });
-	 // {% endfor %}
+ function setMarkers(geocoder, map) {
+	 var info_window = new google.maps.InfoWindow();
+	 var marker;
+
+	 {% for v in venues %}
+		 marker = new google.maps.Marker({
+			 map: map,
+			 position: {lat: {{v.latitude}}, lng: {{v.longitude}}}
+		 });
+
+		 google.maps.event.addListener(marker, 'click', (function(marker){
+			 return function(){
+					 info_window.setContent("{{v.name}}" + "<br>" + "{{v.address}}")
+					 info_window.open(map, marker);
+
+					 $.ajax({
+						 url: '/ajax/show_raves/',
+						 data: {
+							 'venue_id': {{v.id}}
+						 },
+						 dataType: 'json',
+						 success: function(data){
+							 var rave_list_html = "<p class=\"list_title\">Raves at {{v.name}}:<p><ul>";
+							 var raves = data.raves;
+
+							 $.each(raves, function(r){
+								 rave_list_html += "<li>" + raves[r].name + " - " + raves[r].date
+								 + "<br>Featuring: " + raves[r].dj
+								 + "<br><a target=\"_blank\" href=" + raves[r].tickets + ">Buy Tickets</a>"+ "</li>";
+							 })
+							 rave_list_html += "</ul>"
+
+							 $('.rave_list').html(rave_list_html);
+						 }
+					 });
+			 	}
+		 })(marker));
+
+	 {% endfor %}
 
  }
 	google.maps.event.addDomListener(window, 'load', initialize);

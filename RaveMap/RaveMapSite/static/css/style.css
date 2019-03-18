@@ -26,39 +26,45 @@ header #OB, header #CB{
 
 .results{
 	overflow: hidden;
+	font-color: "white";
 }
 
 .container{
-	width:98%;
-	margin:auto;
 	overflow:hidden;
+	width: 98%;
+	margin-left: 2%
 }
 
 .box{
-	width:47%;
+	width: 48%;
 	float:left;
-	margin: auto;
-	padding: 5px;
 	min-height: 420px;
 }
 
 #map{
-	width: 98%;
 	height: 420px;
 	frameborder:0;
 	border:0;
 }
 
+.list_title{
+	font-family: Tahoma, Geneva, sans-serif;
+	font-size: 26px;
+	font-weight: bold;
+	text-align: center;
+	line-height: 1;
+	margin-top: 20px;
+	color: #FFFFFF
+}
 .rave_list{
-	float: left;
-	margin-left: 10px;
+	margin-top: -5px;
+	color: #FFFFFF
 }
 
 .search{
-	width: 46%;
 	padding: 5px;
-	margin-left: 10px;
-	margin-bottom: 10px;
+	margin-top: 15px;
+	margin-bottom: 20px;
 }
 
 .change_city{
