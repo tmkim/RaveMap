@@ -48,6 +48,42 @@ def show_raves(request):
     }
     return JsonResponse(data)
 
+def search_map(request):
+    bound_s = float(request.GET.get('bounds', None))
+    bound_w = float(request.GET.get('boundw', None))
+    bound_n = float(request.GET.get('boundn', None))
+    bound_e = float(request.GET.get('bounde', None))
+
+    venues = Venue.objects.all()
+    venue_search = []
+
+    for v in venues:
+        if bound_w < bound_e:
+            if bound_s <= v.latitude and v.latitude <= bound_n:
+                if bound_w <= v.longitude and v.longitude <= bound_e:
+                    venue_search.append({
+                        'id': v.id,
+                        'name': v.name,
+                        'address': v.address,
+                        'lat': v.latitude,
+                        'lng': v.longitude
+                    })
+        else: #bound_e < bound_w
+            if bound_s <= v.latitude and v.latitude <= bound_n:
+                if bound_w <= v.longitude or v.longitude <= bound_e:
+                    venue_search.append({
+                        'id': v.id,
+                        'name': v.name,
+                        'address': v.address,
+                        'lat': v.latitude,
+                        'lng': v.longitude
+                    })
+
+    data = {
+        'venues': venue_search
+    }
+    return JsonResponse(data);
+
 def get_raves_by_venue(venue_Id):
     base_url = 'https://edmtrain.com/api/events?'
     api_key = settings.EDMTRAIN_API_KEY

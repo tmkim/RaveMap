@@ -20,4 +20,5 @@ from RaveMapSite import views as v
 urlpatterns = [
     url(r'^$', v.index),
     url(r'^ajax/show_raves/$', v.show_raves),
+    url(r'^ajax/search_map/$', v.search_map),
 ]
