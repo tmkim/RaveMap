@@ -14,14 +14,21 @@ header{
 	border-bottom: #00FFFF 3px solid;
 }
 
+#Logo{
+	margin-top: 5px;
+}
+
 header #A, header #E{
-	color: #1aff1a
+	color: #1aff1a;
+	font-weight: bold;
 }
 header #R, header #V, header #M, header #P{
 	color: #b366ff;
+	font-weight: bold;
 }
 header #OB, header #CB{
 	color: #00FFFF;
+	font-weight: bold;
 }
 
 .results{
@@ -32,7 +39,7 @@ header #OB, header #CB{
 .container{
 	overflow:hidden;
 	width: 98%;
-	margin-left: 2%
+	margin-left: 2%;
 }
 
 .box{
@@ -45,6 +52,7 @@ header #OB, header #CB{
 	height: 420px;
 	frameborder:0;
 	border:0;
+	margin-top: 50px;
 }
 
 .list_title{
@@ -63,12 +71,19 @@ header #OB, header #CB{
 
 .search{
 	padding: 5px;
-	margin-top: 15px;
-	margin-bottom: 20px;
+	margin-top: 25px;
 }
 
 .change_city{
 	float: left;
+}
+
+.dd_state{
+	float: left;
+}
+
+.dd_city{
+	float: right;
 }
 
 .search_map{

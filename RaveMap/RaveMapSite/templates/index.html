@@ -1,15 +1,55 @@
 {% include 'partials/header.html' %}
 	<div class="container">
 		<div class="box">
+			<div id="map"></div>
 			<div class="search">
 				<div class="change_city">
 
 					<!-- use backend to show filter form;
 						 enable/disable location, show slider value, query api -->
+				 <button type="button" class="btn btn-info" data-toggle="modal" data-target="#exampleModal">
+					 Change City
+				 </button>
 
-					<form class="search_form" action="change_city" method='GET'> <!-- action="backend.py" -->
-						<button type="button" class="drop">Change City</button>
-					</form>
+				 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+					<div class="modal-dialog" role="document">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title" id="exampleModalLabel">Select A State and City</h5>
+								<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+							</div>
+							<div class="modal-body">
+								<div class="dropdown">
+								  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								    Select a State
+								  </button>
+								  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+								    <a class="dropdown-item" href="#">Action</a>
+								    <a class="dropdown-item" href="#">Another action</a>
+								    <a class="dropdown-item" href="#">Something else here</a>
+								  </div>
+								</div>
+								<br>
+								<div class="dropdown">
+								  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								    Select a City
+								  </button>
+								  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+								    <a class="dropdown-item" href="#">Action</a>
+								    <a class="dropdown-item" href="#">Another action</a>
+								    <a class="dropdown-item" href="#">Something else here</a>
+								  </div>
+								</div>
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+								<button type="button" class="btn btn-info">Save changes</button>
+							</div>
+						</div>
+					</div>
+				</div>
 
 					<!-- <form class="filter_form">
 						<input type="radio" name="location" value="current" checked> Current Location<br>
@@ -20,11 +60,9 @@
 
 				</div>
 				<div class="search_map">
-					<input type=button onclick="searchBounds();" value="Search This Area">
+					<button type=button class="btn btn-info" onclick="searchBounds();">Search This Area</button>
 				</div>
 			</div>
-			<br>
-			<div id="map"></div>
 		</div>
 		<div class="box">
 			<div class = "rave_list">
@@ -33,7 +71,11 @@
 				{% endfor %} -->
 			</div>
 		</div>
-	<div>
+	</div>
+
+		<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 </body>
 {% include 'partials/footer.html' %}
 <script>
