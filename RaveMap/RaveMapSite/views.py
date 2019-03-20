@@ -79,29 +79,36 @@ def search_map(request):
 
 def change_city(request):
     new_city = request.GET.get('city', None)
-    g = Nominatim(user_agent="RaveMapSite")
-    loc = g.geocode(new_city)
+    if not new_city == "default":
+        g = Nominatim(user_agent="RaveMapSite")
+        loc = g.geocode(new_city)
 
-    clat = loc.latitude
-    clng = loc.longitude
-    venues = get_nearby_venues(clat, clng, 15)
-    venue_list = []
-    for v in venues:
-        venue_list.append({
-            'id': v.id,
-            'name': v.name,
-            'address': v.address,
-            'lat': v.latitude,
-            'lng': v.longitude
-        })
+        clat = loc.latitude
+        clng = loc.longitude
+        venues = get_nearby_venues(clat, clng, 15)
+        venue_list = []
+        for v in venues:
+            venue_list.append({
+                'id': v.id,
+                'name': v.name,
+                'address': v.address,
+                'lat': v.latitude,
+                'lng': v.longitude
+            })
 
-    data = {
-        'clat': clat,
-        'clng': clng,
-        'venues': venue_list
-    }
+        data = {
+            'success': True,
+            'clat': clat,
+            'clng': clng,
+            'venues': venue_list
+        }
 
-    return JsonResponse(data)
+        return JsonResponse(data)
+    else:
+        data = {
+            'success': False
+        }
+        return JsonResponse(data)
 
 def get_raves_by_venue(venue_Id):
     base_url = 'https://edmtrain.com/api/events?'

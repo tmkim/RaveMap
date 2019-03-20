@@ -5,6 +5,7 @@ body{
 	padding: 0;
 	margin:0;
 	background-color: #606060;
+	min-height: 660px;
 }
 
 header{
@@ -15,7 +16,8 @@ header{
 }
 
 #Logo{
-	margin-top: 5px;
+	padding-top: 5px;
+	padding-left: 5px;
 }
 
 header #A, header #E{
@@ -31,32 +33,56 @@ header #OB, header #CB{
 	font-weight: bold;
 }
 
-.results{
-	overflow: hidden;
-	font-color: "white";
-}
-
 .container{
-	overflow:hidden;
-	width: 98%;
-	margin-left: 2%;
+	width: 100%;
+	margin: auto;
+	padding: 0;
 }
 
-.box{
-	width: 48%;
+.box1{
+	width: 50%;
 	float:left;
-	min-height: 420px;
+	padding-right: 10px;
+}
+.box2{
+	width: 50%;
+	float:right;
+	padding-left: 10px;
+	margin: auto;
 }
 
 #map{
 	height: 420px;
-	frameborder:0;
-	border:0;
-	margin-top: 50px;
+	margin-top: 58px;
+}
+
+.rave_list{
+	margin-top: -5px;
+	font-family: Tahoma, Geneva, sans-serif;
+	font-size: 16x;
+	color: #FFFFFF;
+}
+
+.rave_name{
+	font-style: italic;
+	float: left;
+	font-weight: bold;
+}
+
+.rave_date{
+	float: right;
+}
+
+.rave_tix{
+	text-decoration: underline;
+	color: #1aff1a;
+}
+
+.rave_tix:hover{
+	color: #00FFFF;
 }
 
 .list_title{
-	font-family: Tahoma, Geneva, sans-serif;
 	font-size: 26px;
 	font-weight: bold;
 	text-align: center;
@@ -64,48 +90,42 @@ header #OB, header #CB{
 	margin-top: 20px;
 	color: #FFFFFF
 }
-.rave_list{
-	margin-top: -5px;
-	color: #FFFFFF
+
+li{
+	font-family: Tahoma, Geneva, sans-serif;
+	display: inline-block;
+	border: 1px solid #00FFFF;
+	padding: 10px;
+	width: 100%;
+}
+
+
+ul{
+	min-height: 0px;
+	height: auto;
+	max-height: 420px;
+	overflow: hidden;
+	overflow-y: scroll;
+	border: 1px solid #00FFFF;
+	padding: 0;
+	border-radius: 4.2px;
 }
 
 .search{
 	padding: 5px;
-	margin-top: 25px;
+	margin-top: 20px;
 }
 
 .change_city{
 	float: left;
 }
 
-.dd_state{
-	float: left;
-}
-
-.dd_city{
-	float: right;
-}
-
 .search_map{
 	float: right;
 }
 
-.change_city .drop{
-}
-
-.change_city .filter_form{
-	display:none;
-	border: #ffffff 1px solid;
-	color:white;
-	position: absolute;
-	z-index: 1;
-	background-color: #606060;
-	box-shadow: 0px 8px 20px 0px rgba(0,0,0,0.2);
-	padding: 5px;
-	margin-top: 5px;
-}
-
 footer{
+	float: left;
 	font-family: Tahoma, Geneva, sans-serif;
 	color: white;
 	background-color: #404040;
@@ -116,15 +136,34 @@ footer{
 	width:100%;
 }
 
-@media(max-width: 768px){
+@media(max-width: 990px){
 	header{
 		text-align: center;
 		width:100%;
 	}
 
-.box{
+	#Logo{
+		margin-left: 0;
+	}
+
+.box1{
+		width:100%;
+		float:none;
+		padding: 0;
+	}
+
+.box2{
 		width:100%;
 		float:none;
 		margin-top:10px;
+		margin-bottom: 10px;
+		padding: 0;
 	}
+
+.rave_list{
+	margin-top: 60px;
+	margin-left: 0;
+}
+
+
 }
