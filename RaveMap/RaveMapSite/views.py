@@ -7,14 +7,18 @@ from operator import itemgetter
 from datetime import datetime, date
 from .models import Venue, Location
 from math import radians, cos, sin, asin, sqrt
+from geopy.geocoders import Nominatim
 import requests
 import json
 import geocoder
 
 def index(request):
     g = geocoder.ip('me')
+    clat = g.latlng[0]
+    clng = g.latlng[1]
 
-    venues = get_nearby_venues(g.latlng[0], g.latlng[1], 15)
+    venues = get_nearby_venues(clat, clng, 15)
+    locations = get_locations()
 
     # with requests.Session() as session:
     #     for v in venues:
@@ -32,8 +36,9 @@ def index(request):
 
     context = {
                 'venues': venues,
-                'clat' : g.latlng[0],
-                'clng' : g.latlng[1],
+                'locations': locations,
+                'clat' : clat,
+                'clng' : clng,
                 'gmap_url' : settings.GOOGLE_MAPS_URL
               }
     #print(resp.text)
@@ -83,6 +88,32 @@ def search_map(request):
         'venues': venue_search
     }
     return JsonResponse(data);
+
+def change_city(request):
+    new_city = request.GET.get('city', None)
+    g = Nominatim(user_agent="RaveMapSite")
+    loc = g.geocode(new_city)
+
+    clat = loc.latitude
+    clng = loc.longitude
+    venues = get_nearby_venues(clat, clng, 15)
+    venue_list = []
+    for v in venues:
+        venue_list.append({
+            'id': v.id,
+            'name': v.name,
+            'address': v.address,
+            'lat': v.latitude,
+            'lng': v.longitude
+        })
+
+    data = {
+        'clat': clat,
+        'clng': clng,
+        'venues': venue_list
+    }
+
+    return JsonResponse(data)
 
 def get_raves_by_venue(venue_Id):
     base_url = 'https://edmtrain.com/api/events?'
@@ -142,6 +173,22 @@ def build_response_content(response):
             })
 
     return content
+
+def get_locations():
+    venues = Venue.objects.all()
+    location_flags=[]
+    locations = []
+    for v in venues:
+        if not (v.location in location_flags):
+            loc = v.location.split(',')
+            locations.append({
+                'city': loc[0],
+                'state': loc[1],
+                'location': v.location
+            })
+            location_flags.append(v.location)
+
+    return sorted(locations, key=lambda x: x['state'])
 
     # def insert_venues_into_db():
     #     url = 'https://edmtrain.com/api/events?client={}'

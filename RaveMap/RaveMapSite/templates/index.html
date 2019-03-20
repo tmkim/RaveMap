@@ -21,31 +21,17 @@
 								</button>
 							</div>
 							<div class="modal-body">
-								<div class="dropdown">
-								  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-								    Select a State
-								  </button>
-								  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-								    <a class="dropdown-item" href="#">Action</a>
-								    <a class="dropdown-item" href="#">Another action</a>
-								    <a class="dropdown-item" href="#">Something else here</a>
-								  </div>
-								</div>
-								<br>
-								<div class="dropdown">
-								  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-								    Select a City
-								  </button>
-								  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-								    <a class="dropdown-item" href="#">Action</a>
-								    <a class="dropdown-item" href="#">Another action</a>
-								    <a class="dropdown-item" href="#">Something else here</a>
-								  </div>
-								</div>
+								<span class="location_label">Location: </span>
+								<select class="location_dropdown" type="dropdown" id="new_location">
+									<option value="default">Choose City</option>
+									{% for l in locations %}
+									<option value="{{l.location}}">{{l.city}}, {{l.state}}</option>
+									{% endfor %}
+								</select>
 							</div>
 							<div class="modal-footer">
 								<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-								<button type="button" class="btn btn-info">Save changes</button>
+								<button type="button" class="btn btn-info" id="save_btn" data-dismiss="modal">Save Changes</button>
 							</div>
 						</div>
 					</div>
@@ -79,13 +65,12 @@
 </body>
 {% include 'partials/footer.html' %}
 <script>
- var geocoder;
  var map;
  var markers = [];
 
  function initMap() {
 	 	 map = new google.maps.Map(document.getElementById('map'), {
-		 zoom: 12,
+		 zoom: 11,
 		 center: {lat: {{clat}}, lng: {{clng}}}
 	 });
 	 setMarkers();
@@ -132,7 +117,6 @@
 	 {% endfor %}
 
  }
-	// google.maps.event.addDomListener(window, 'load', initialize);
 
 	function searchBounds(){
 		//remove old markers
@@ -206,6 +190,73 @@
 			}
 		});
 	 }
+
+	 $("#save_btn").on("click", function(){
+		 var city = $("#new_location").val();
+		 $.ajax({
+			 url: '/ajax/change_city/',
+			 data: {
+				 'city': city
+			 },
+			 dataType: 'json',
+			 success: function(data){
+				 map.setCenter({lat: data.clat, lng: data.clng});
+				 map.setZoom(11);
+
+				 for (var x = 0; x < markers.length; x++){
+				 	markers[x].setMap(null);
+				 }
+				 markers = [];
+
+				 //add new relevant markers
+				 var info_window = new google.maps.InfoWindow();
+				 var marker;
+				 var venue_list = data.venues;
+
+				 $.each(venue_list, function(v){
+
+				 marker = new google.maps.Marker({
+			 		 map: map,
+			 		 position: {lat: venue_list[v].lat, lng: venue_list[v].lng}
+ 			 	 });
+
+				 google.maps.event.addListener(marker, 'click', (function(marker){
+					return function(){
+							info_window.setContent(venue_list[v].name + "<br>" + venue_list[v].address)
+							info_window.open(map, marker);
+
+							$.ajax({
+								url: '/ajax/show_raves/',
+								data: {
+									'venue_id': venue_list[v].id
+								},
+								dataType: 'json',
+								success: function(data){
+									var rave_list_html = "<p class=\"list_title\">Raves at " + venue_list[v].name + ":<p><ul>";
+									var raves = data.raves;
+
+									$.each(raves, function(r){
+										rave_list_html += "<li>" + raves[r].name + " - " + raves[r].date
+										+ "<br>Featuring: " + raves[r].dj
+										+ "<br><a target=\"_blank\" href=" + raves[r].tickets + ">Buy Tickets</a>"+ "</li>";
+									})
+									rave_list_html += "</ul>"
+
+									$('.rave_list').html(rave_list_html);
+								}
+							});
+					 }
+				 })(marker));
+
+				 markers.push(marker);
+				})
+			 }
+		 });
+
+		 $("#new_location").prop("selectedIndex", 0);
+	 });
+
+	 google.maps.event.addDomListener(window, 'load', initialize);
 </script>
 <script src={{gmap_url}} async defer></script>
 <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
