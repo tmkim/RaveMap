@@ -36,14 +36,6 @@
 						</div>
 					</div>
 				</div>
-
-					<!-- <form class="filter_form">
-						<input type="radio" name="location" value="current" checked> Current Location<br>
-						<input type="radio" name="location" value="other"> <input type="text" placeholder="Enter Zip Code" pattern="[0-9]{5}"><br>
-						Distance: 0 mi.<input type="range" name="distance" min="0" max="100" step="5">100 mi.<br>
-						<button type="submit" class="submit_search">Search</button>
-					</form> -->
-
 				</div>
 				<div class="search_map">
 					<button type=button class="btn btn-info" onclick="searchBounds();">Search This Area</button>
@@ -52,9 +44,6 @@
 		</div>
 		<div class="box">
 			<div class = "rave_list">
-				<!-- {% for info in raves %}
-					<li>{{info.name}} @ {{info.venue}} - {{info.date}}</li>
-				{% endfor %} -->
 			</div>
 		</div>
 	</div>
@@ -143,7 +132,6 @@
 			},
 			dataType: 'json',
 			success: function(data){
-				var rave_list_html = "<p class=\"list_title\">New Venues Loaded<p><ul>";
 				var venue_list = data.venues;
 
 				$.each(venue_list, function(v){
@@ -181,12 +169,8 @@
 		 		  })(marker));
 
 					markers.push(marker);
-
-					rave_list_html += "<li>" + venue_list[v].name + "</li>"
 				})
-				rave_list_html += "</ul>"
-
-				$('.rave_list').html(rave_list_html)
+				$('.rave_list').html("<p class=\"list_title\">Venues Reloaded</p/")
 			}
 		});
 	 }
@@ -241,7 +225,6 @@
 										+ "<br><a target=\"_blank\" href=" + raves[r].tickets + ">Buy Tickets</a>"+ "</li>";
 									})
 									rave_list_html += "</ul>"
-
 									$('.rave_list').html(rave_list_html);
 								}
 							});
@@ -250,6 +233,7 @@
 
 				 markers.push(marker);
 				})
+				$('.rave_list').html("<p class=\"list_title\">Venues Reloaded</p/")
 			 }
 		 });
 

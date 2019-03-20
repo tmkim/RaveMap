@@ -13,26 +13,15 @@ import json
 import geocoder
 
 def index(request):
+
+    #insert_venues_into_db()
+
     g = geocoder.ip('me')
     clat = g.latlng[0]
     clng = g.latlng[1]
 
     venues = get_nearby_venues(clat, clng, 15)
     locations = get_locations()
-
-    # with requests.Session() as session:
-    #     for v in venues:
-    #         v.address = v.address[:-11]
-    #         m = geocoder.google("51 Stuart St, Boston MA", session=session)
-    #         markers.append(m)
-
-    # venues = Venue.objects.all()
-    # if not venues.exists():
-    #     insert_venues_into_db()
-
-    # locs = Location.objects.all()
-    # if not locs.exists():
-    #     insert_locs_into_db()
 
     context = {
                 'venues': venues,
@@ -41,7 +30,6 @@ def index(request):
                 'clng' : clng,
                 'gmap_url' : settings.GOOGLE_MAPS_URL
               }
-    #print(resp.text)
 
     return render(request, 'index.html', context)
 
@@ -190,23 +178,21 @@ def get_locations():
 
     return sorted(locations, key=lambda x: x['state'])
 
-    # def insert_venues_into_db():
-    #     url = 'https://edmtrain.com/api/events?client={}'
-    #     r = requests.get(url.format(settings.EDMTRAIN_API_KEY)).json()
-    #     if r['success'] == True:
-    #         for e in r['data']:
-    #             try:
-    #                 Venue.objects.get(id=e['venue']['id'])
-    #             except Venue.DoesNotExist:
-    #                 i = Venue(
-    #                     id=e['venue']['id'],
-    #                     name = e['venue']['name'],
-    #                     location = e['venue']['location'],
-    #                     address = e['venue']['address'],
-    #                     state = e['venue']['state'],
-    #                     longitude = e['venue']['longitude'],
-    #                     latitude = e['venue']['latitude']
-    #                 )
-    #                 i.save()
-
-    # def insert_locs_into_db():
+def insert_venues_into_db():
+    url = 'https://edmtrain.com/api/events?client={}'
+    r = requests.get(url.format(settings.EDMTRAIN_API_KEY)).json()
+    if r['success'] == True:
+        for e in r['data']:
+            try:
+                Venue.objects.get(id=e['venue']['id'])
+            except Venue.DoesNotExist:
+                i = Venue(
+                    id=e['venue']['id'],
+                    name = e['venue']['name'],
+                    location = e['venue']['location'],
+                    address = e['venue']['address'],
+                    state = e['venue']['state'],
+                    longitude = e['venue']['longitude'],
+                    latitude = e['venue']['latitude']
+                )
+                i.save()
