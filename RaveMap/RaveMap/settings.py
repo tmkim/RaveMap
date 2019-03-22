@@ -80,11 +80,11 @@ WSGI_APPLICATION = 'RaveMap.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'ravemap',
-        'USER': 'root',
+        'USER': 'tmkim',
         'PASSWORD': config.DB_PW,
-        'HOST':'',
+        'HOST':'localhost',
         'PORT':''
     }
 }
