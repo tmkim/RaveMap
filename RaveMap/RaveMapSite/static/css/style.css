@@ -51,9 +51,17 @@ header #OB, header #CB{
 	margin: auto;
 }
 
+#map_title{
+	font-size: 20px;
+	text-align: center;
+	line-height: 1;
+	margin-top: 20px;
+	color: #FFFFFF
+}
+
 #map{
 	height: 420px;
-	margin-top: 58px;
+	margin-top: 20px;
 }
 
 .rave_list{
