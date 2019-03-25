@@ -22,13 +22,14 @@ def index(request):
 
     venues = get_nearby_venues(clat, clng, 15)
     locations = get_locations()
+    gmap_url = "https://maps.googleapis.com/maps/api/js?key={}&callback=initMap"
 
     context = {
                 'venues': venues,
                 'locations': locations,
                 'clat' : clat,
                 'clng' : clng,
-                'gmap_url' : settings.GOOGLE_MAPS_URL
+                'gmap_url' : gmap_url.format(settings.GMAPS_API_KEY)
               }
 
     return render(request, 'index.html', context)
@@ -112,14 +113,14 @@ def change_city(request):
 
 def get_raves_by_venue(venue_Id):
     base_url = 'https://edmtrain.com/api/events?'
-    api_key = settings.EDMTRAIN_API_KEY
+    api_key = settings.EDM_API_KEY
     api_url = '{}venueIds={}&client={}'
 
     return api_url.format(base_url, venue_Id, api_key)
 
 def build_edmt_api_call(lat,long, radius=15):
     base_url = 'https://edmtrain.com/api/events?'
-    api_key = settings.EDMTRAIN_API_KEY
+    api_key = settings.EDM_API_KEY
     start_date = str(date.today())
     venues = get_nearby_venues(lat, long, radius)
     venue_ids = ""
@@ -187,7 +188,7 @@ def get_locations():
 
 def insert_venues_into_db():
     url = 'https://edmtrain.com/api/events?client={}'
-    r = requests.get(url.format(settings.EDMTRAIN_API_KEY)).json()
+    r = requests.get(url.format(settings.EDM_API_KEY)).json()
     if r['success'] == True:
         for e in r['data']:
             try:

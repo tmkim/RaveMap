@@ -10,24 +10,19 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
-import os, environ
+import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
-# Set up environment variables
-env = environ.Env(DEBUG=(bool, False),)
-environ.Env.read_env()
-
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '%1^1e$94-ap)1b3v@orj%@%4j@$z%0@3$lxld1qn^@ap7)wv$)'
-EDMTRAIN_API_KEY = env('EDMTRAIN_API_KEY')
-GOOGLE_MAPS_API_KEY = env('GOOGLE_MAPS_API_KEY')
-GOOGLE_MAPS_URL = env('GOOGLE_MAPS_URL')
+SECRET_KEY = os.environ.get('SECRET_KEY')
+DATABASE_PASSWORD = os.environ.get('DATABASE_PASSWORD')
+EDM_API_KEY = os.environ.get('EDM_API_KEY')
+GMAPS_API_KEY = os.environ.get('GMAPS_API_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -62,7 +57,7 @@ ROOT_URLCONF = 'RaveMap.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'RaveMapSite/templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -81,12 +76,14 @@ WSGI_APPLICATION = 'RaveMap.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
+ALLOWED_HOSTS =  ['ravemap.herokuapp.com']
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'ravemap',
         'USER': 'tmkim',
-        'PASSWORD': env('DB_PW'),
+        'PASSWORD': DATABASE_PASSWORD,
         'HOST':'localhost',
         'PORT':''
     }

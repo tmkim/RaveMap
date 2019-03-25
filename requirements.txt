@@ -3,7 +3,6 @@ chardet==3.0.4
 Click==7.0
 decorator==4.3.2
 Django==1.11.20
-django-environ==0.4.5
 future==0.17.1
 geocoder==1.38.1
 geographiclib==1.49
