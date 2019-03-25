@@ -10,10 +10,14 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
-import os
+import os, environ
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# Set up environment variables
+env = environ.Env(DEBUG=(bool, False),)
+environ.Env.read_env()
 
 
 # Quick-start development settings - unsuitable for production
@@ -21,9 +25,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '%1^1e$94-ap)1b3v@orj%@%4j@$z%0@3$lxld1qn^@ap7)wv$)'
-EDMTRAIN_API_KEY = os.environ.get('EDMTRAIN_API_KEY', '')
-GOOGLE_MAPS_API_KEY = os.environ.get('GOOGLE_MAPS_API_KEY', '')
-GOOGLE_MAPS_URL = os.environ.get('GOOGLE_MAPS_URL', '')
+EDMTRAIN_API_KEY = env('EDMTRAIN_API_KEY')
+GOOGLE_MAPS_API_KEY = env('GOOGLE_MAPS_API_KEY')
+GOOGLE_MAPS_URL = env('GOOGLE_MAPS_URL')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -82,7 +86,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'ravemap',
         'USER': 'tmkim',
-        'PASSWORD': os.environ.get('DB_PW', ''),
+        'PASSWORD': env('DB_PW'),
         'HOST':'localhost',
         'PORT':''
     }
