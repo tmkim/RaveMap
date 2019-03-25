@@ -9,7 +9,6 @@ geocoder==1.38.1
 geographiclib==1.49
 geopy==1.18.1
 idna==2.8
-MySQL-python==1.2.5
 psycopg2==2.7.7
 psycopg2-binary==2.7.7
 python-decouple==3.1
