@@ -1,1 +1,1 @@
-web: gunicorn RaveMap/wsgi
+web: gunicorn RaveMap.wsgi
