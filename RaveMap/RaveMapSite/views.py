@@ -16,7 +16,17 @@ def index(request):
 
     #insert_venues_into_db()
 
-    g = geocoder.ip('me')
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0]
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+
+    if ip == "127.0.0.1":
+        g = geocoder.ip('me')
+    else:
+        g = geocoder.ip(ip)
+
     clat = g.latlng[0]
     clng = g.latlng[1]
 
