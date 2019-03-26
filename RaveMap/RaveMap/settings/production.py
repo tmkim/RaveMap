@@ -24,8 +24,6 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 DATABASE_PASSWORD = os.environ.get('DATABASE_PASSWORD')
 EDM_API_KEY = os.environ.get('EDM_API_KEY')
 GMAPS_API_KEY = os.environ.get('GMAPS_API_KEY')
-AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
-AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
