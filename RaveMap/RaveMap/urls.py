@@ -22,4 +22,5 @@ urlpatterns = [
     url(r'^ajax/show_raves/$', v.show_raves),
     url(r'^ajax/search_map/$', v.search_map),
     url(r'^ajax/change_city/$', v.change_city),
+    url(r'^ajax/change_date/$', v.change_date),
 ]

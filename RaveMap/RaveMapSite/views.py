@@ -34,7 +34,10 @@ def index(request):
     locations = get_locations()
     gmap_url = "https://maps.googleapis.com/maps/api/js?key={}&callback=initMap"
 
+    mindate =  datetime.today().strftime("%Y-%m-%d")
+
     context = {
+                'mindate': mindate,
                 'venues': venues,
                 'locations': locations,
                 'clat' : clat,
@@ -45,7 +48,10 @@ def index(request):
     return render(request, 'index.html', context)
 
 def show_raves(request):
-    r = requests.get(get_raves_by_venue(request.GET.get('venue_id', None))).json()
+    venue_id = request.GET.get('venue_id', None)
+    start_date = request.GET.get('start_date', None)
+    end_date = request.GET.get('end_date', None)
+    r = requests.get(get_raves_by_venue(venue_id, start_date, end_date)).json()
     raves = build_response_content(r)
     data = {
         'raves': raves
@@ -88,6 +94,62 @@ def search_map(request):
     }
     return JsonResponse(data);
 
+def change_date(request):
+    start_date = request.GET.get('start_date', None)
+    end_date = request.GET.get('end_date', None)
+    bound_s = float(request.GET.get('bounds', None))
+    bound_w = float(request.GET.get('boundw', None))
+    bound_n = float(request.GET.get('boundn', None))
+    bound_e = float(request.GET.get('bounde', None))
+
+    #get nearby venues
+    venues = Venue.objects.all()
+    venue_search = []
+
+    for v in venues:
+        if bound_w < bound_e:
+            if bound_s <= v.latitude and v.latitude <= bound_n:
+                if bound_w <= v.longitude and v.longitude <= bound_e:
+                    venue_search.append({
+                        'id': v.id,
+                        'name': v.name,
+                        'address': v.address,
+                        'lat': v.latitude,
+                        'lng': v.longitude
+                    })
+        else: #bound_e < bound_w
+            if bound_s <= v.latitude and v.latitude <= bound_n:
+                if bound_w <= v.longitude or v.longitude <= bound_e:
+                    venue_search.append({
+                        'id': v.id,
+                        'name': v.name,
+                        'address': v.address,
+                        'lat': v.latitude,
+                        'lng': v.longitude
+                    })
+
+    #get raves at each venue (within range), build master list
+    rave_list = []
+    for v in venue_search:
+        r = requests.get(get_raves_by_venue(v['id'], start_date, end_date)).json()
+        raves = build_response_content(r)
+        for rave in raves:
+            rave_list.append(rave)
+
+    #loop through raves and add venue IDs
+    results = []
+    venue_list = []
+    for r in rave_list:
+        venue_list.append(r['venue_id'])
+
+    for v in venue_search:
+        if v['id'] in venue_list:
+            results.append(v)
+
+    data = {'venues': results}
+
+    return JsonResponse(data)
+
 def change_city(request):
     new_city = request.GET.get('city', None)
     if not new_city == "default":
@@ -121,24 +183,12 @@ def change_city(request):
         }
         return JsonResponse(data)
 
-def get_raves_by_venue(venue_Id):
+def get_raves_by_venue(venue_Id, start_date, end_date):
     base_url = 'https://edmtrain.com/api/events?'
     api_key = settings.EDM_API_KEY
-    api_url = '{}venueIds={}&client={}'
+    api_url = '{}venueIds={}&startDate={}&endDate={}&client={}'
 
-    return api_url.format(base_url, venue_Id, api_key)
-
-def build_edmt_api_call(lat,long, radius=15):
-    base_url = 'https://edmtrain.com/api/events?'
-    api_key = settings.EDM_API_KEY
-    start_date = str(date.today())
-    venues = get_nearby_venues(lat, long, radius)
-    venue_ids = ""
-    for v in venues:
-        venue_ids += str(v.id) + ","
-    api_url = '{}venueIds={}&startDate={}&client={}'
-
-    return api_url.format(base_url, venue_ids[:-1], start_date, api_key)
+    return api_url.format(base_url, venue_Id, start_date, end_date, api_key)
 
 def get_distance(start_lat, start_long, venue_lat, venue_long):
     slat = radians(start_lat)
@@ -175,6 +225,7 @@ def build_response_content(response):
                 'date': datetime.strptime(item['date'], '%Y-%m-%d').strftime('%B %d, %Y'),
                 'dj': djs[:-2],
                 'venue': item['venue']['name'],
+                'venue_id': item['venue']['id'],
                 'tickets': item['ticketLink']
             })
 

@@ -122,15 +122,9 @@ ul{
 .search{
 	padding: 5px;
 	margin-top: 20px;
+	margin-left: 20px;
 }
 
-.change_city{
-	float: left;
-}
-
-.search_map{
-	float: right;
-}
 
 footer{
 	float: left;
@@ -145,6 +139,48 @@ footer{
 }
 
 @media(max-width: 990px){
+	body{
+		min-height: 1300px;
+	}
+
+	header{
+		text-align: center;
+		width:100%;
+	}
+
+	#Logo{
+		margin-left: 0;
+	}
+
+	.box1{
+			width:100%;
+			float:none;
+			padding: 10px;
+	}
+
+	.box2{
+			width:100%;
+			float:none;
+			margin-top:10px;
+			margin-bottom: 10px;
+			padding: 0;
+	}
+
+	.rave_list{
+		margin-top: 60px;
+		margin-left: 0;
+	}
+
+	.search{
+		margin-left: 50px;
+	}
+}
+
+@media(max-width: 757px){
+	body{
+		min-height: 1300px;
+	}
+
 	header{
 		text-align: center;
 		width:100%;
@@ -157,7 +193,7 @@ footer{
 .box1{
 		width:100%;
 		float:none;
-		padding: 0;
+		padding: 10px;
 	}
 
 .box2{
@@ -173,5 +209,8 @@ footer{
 	margin-left: 0;
 }
 
+.search{
+	margin-left: 20px;
+}
 
 }
